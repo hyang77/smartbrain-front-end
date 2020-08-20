@@ -22,12 +22,3 @@ body {
     rgba(89, 42, 199, 1)
   );
 }
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
-button {
-  cursor: pointer;
-}
