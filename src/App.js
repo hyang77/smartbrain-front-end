@@ -33,6 +33,8 @@ class App extends React.Component {
       input: "",
       imageURL: "",
       box: {},
+      route: "signin",
+      isSignedIn: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -78,20 +80,39 @@ class App extends React.Component {
       });
   };
 
+  handleRouteChange = (route) => {
+    if (route === "signout") {
+      this.setState({ isSignedIn: false });
+    } else if (route === "home") {
+      this.setState({ isSignedIn: true });
+    }
+    this.setState({ route: route });
+  };
+
   render() {
     return (
       <div className="App">
         <Particles className="particles" params={particlesOptions} />
-        <Navigation />
-        <Signin />
-        <Register />
-        <Logo />
-        <Rank />
-        <ImageLinkForm
-          handleInput={this.handleInput}
-          handleSubmit={this.handleSubmit}
-        />
-        <FaceRecognition box={this.state.box} imageURL={this.state.imageURL} />
+        <Navigation isSignedIn={this.state.isSignedIn} handleRouteChange={this.handleRouteChange} />
+
+        {this.state.route === "home" ? (
+          <React.Fragment>
+            <Logo />
+            <Rank />
+            <ImageLinkForm
+              handleInput={this.handleInput}
+              handleSubmit={this.handleSubmit}
+            />
+            <FaceRecognition
+              box={this.state.box}
+              imageURL={this.state.imageURL}
+            />
+          </React.Fragment>
+        ) : this.state.route === "signin" ? (
+          <Signin handleRouteChange={this.handleRouteChange} />
+        ) : (
+          <Register handleRouteChange={this.handleRouteChange}/>
+        )}
       </div>
     );
   }

@@ -33,14 +33,14 @@ class Signin extends React.Component {
             </fieldset>
             <div className="">
               <input
-                onClick={this.onSubmitSignIn}
+                onClick={() => this.props.handleRouteChange("home")}
                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
                 type="submit"
                 value="Sign in"
               />
             </div>
             <div className="lh-copy mt3">
-              <p className="f6 link dim black db pointer">Register</p>
+              <p onClick={() => this.props.handleRouteChange("register")} className="f6 link dim black db pointer">Register</p>
             </div>
           </div>
         </main>
