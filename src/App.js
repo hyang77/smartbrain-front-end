@@ -42,6 +42,12 @@ class App extends React.Component {
     this.displayFaceBox = this.displayFaceBox.bind(this);
   }
 
+  componentDidMount() {
+    fetch("http://localhost:3000")
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }
+
   calcFaceLocation = (data) => {
     const clarifaiFace =
       data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -93,7 +99,10 @@ class App extends React.Component {
     return (
       <div className="App">
         <Particles className="particles" params={particlesOptions} />
-        <Navigation isSignedIn={this.state.isSignedIn} handleRouteChange={this.handleRouteChange} />
+        <Navigation
+          isSignedIn={this.state.isSignedIn}
+          handleRouteChange={this.handleRouteChange}
+        />
 
         {this.state.route === "home" ? (
           <React.Fragment>
@@ -111,7 +120,7 @@ class App extends React.Component {
         ) : this.state.route === "signin" ? (
           <Signin handleRouteChange={this.handleRouteChange} />
         ) : (
-          <Register handleRouteChange={this.handleRouteChange}/>
+          <Register handleRouteChange={this.handleRouteChange} />
         )}
       </div>
     );

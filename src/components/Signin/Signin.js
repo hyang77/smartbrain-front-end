@@ -1,7 +1,40 @@
 import React from "react";
 
 class Signin extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { signInEmail: "", signInPassword: "" };
+    this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handleSignIn = this.handleSignIn.bind(this);
+  }
+
+  handleEmailChange = (evt) => {
+    this.setState({ signInEmail: evt.target.value });
+  };
+
+  handlePasswordChange = (evt) => {
+    this.setState({ signInPassword: evt.target.value });
+  };
+
+  handleSignIn = () => {
+    fetch("http://localhost:3000/signin", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: this.state.signInEmail,
+        password: this.state.signInPassword,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data === "success") {
+          this.props.handleRouteChange("home");
+        }
+      });
+  };
   render() {
+    const { handleRouteChange } = this.props;
     return (
       <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
         <main className="pa4 black-80">
@@ -13,6 +46,7 @@ class Signin extends React.Component {
                   Email
                 </label>
                 <input
+                  onChange={this.handleEmailChange}
                   className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type="email"
                   name="email-address"
@@ -24,6 +58,7 @@ class Signin extends React.Component {
                   Password
                 </label>
                 <input
+                  onChange={this.handlePasswordChange}
                   className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type="password"
                   name="password"
@@ -33,14 +68,19 @@ class Signin extends React.Component {
             </fieldset>
             <div className="">
               <input
-                onClick={() => this.props.handleRouteChange("home")}
+                onClick={this.handleSignIn}
                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
                 type="submit"
                 value="Sign in"
               />
             </div>
             <div className="lh-copy mt3">
-              <p onClick={() => this.props.handleRouteChange("register")} className="f6 link dim black db pointer">Register</p>
+              <p
+                onClick={() => handleRouteChange("register")}
+                className="f6 link dim black db pointer"
+              >
+                Register
+              </p>
             </div>
           </div>
         </main>
