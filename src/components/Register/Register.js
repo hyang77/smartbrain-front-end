@@ -1,6 +1,46 @@
 import React from "react";
 
 class Register extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { email: "", password: "", name: "" };
+    this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handleNameChange = this.handleNameChange.bind(this);
+    this.handleRegister = this.handleRegister.bind(this);
+  }
+
+  handleEmailChange = (evt) => {
+    this.setState({ email: evt.target.value });
+  };
+
+  handlePasswordChange = (evt) => {
+    this.setState({ password: evt.target.value });
+  };
+
+  handleNameChange = (evt) => {
+    this.setState({ name: evt.target.value });
+  };
+
+  handleRegister = () => {
+    fetch("http://localhost:3000/register", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: this.state.email,
+        password: this.state.password,
+        name: this.state.name,
+      }),
+    })
+      .then((response) => response.json())
+      .then((user) => {
+        if (user) {
+          console.log(user)
+          this.props.loadUser(user);
+          this.props.handleRouteChange("home");
+        }
+      });
+  };
   render() {
     return (
       <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
@@ -13,6 +53,7 @@ class Register extends React.Component {
                   Name
                 </label>
                 <input
+                  onChange={this.handleNameChange}
                   className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type="text"
                   name="name"
@@ -24,6 +65,7 @@ class Register extends React.Component {
                   Email
                 </label>
                 <input
+                  onChange={this.handleEmailChange}
                   className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type="email"
                   name="email-address"
@@ -35,6 +77,7 @@ class Register extends React.Component {
                   Password
                 </label>
                 <input
+                  onChange={this.handlePasswordChange}
                   className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type="password"
                   name="password"
@@ -44,6 +87,7 @@ class Register extends React.Component {
             </fieldset>
             <div className="">
               <input
+                onClick={this.handleRegister}
                 className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
                 type="submit"
                 value="Register"

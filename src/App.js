@@ -35,11 +35,19 @@ class App extends React.Component {
       box: {},
       route: "signin",
       isSignedIn: false,
+      user: {
+        id: "",
+        name: "",
+        email: "",
+        entries: 0,
+        joined: "",
+      },
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.calcFaceLocation = this.calcFaceLocation.bind(this);
     this.displayFaceBox = this.displayFaceBox.bind(this);
+    this.loadUser = this.loadUser.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +55,18 @@ class App extends React.Component {
       .then((res) => res.json())
       .then((data) => console.log(data));
   }
+
+  loadUser = (data) => {
+    this.setState({
+      user: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        entries: data.entries,
+        joined: data.joined,
+      },
+    });
+  };
 
   calcFaceLocation = (data) => {
     const clarifaiFace =
@@ -77,13 +97,22 @@ class App extends React.Component {
       .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
       .then((response) => {
         // do something with response
-        console.log(response);
+        if (response) {
+          fetch("http://localhost:3000/image", {
+            method: "put",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: this.state.user.id,
+            }),
+          })
+            .then((response) => response.json())
+            .then((count) => {
+              this.setState(Object.assign(this.state.user, { entries: count }));
+            });
+        }
         this.displayFaceBox(this.calcFaceLocation(response));
       })
-      .catch((err) => {
-        // there was an error
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
   };
 
   handleRouteChange = (route) => {
@@ -107,7 +136,10 @@ class App extends React.Component {
         {this.state.route === "home" ? (
           <React.Fragment>
             <Logo />
-            <Rank />
+            <Rank
+              name={this.state.user.name}
+              entries={this.state.user.entries}
+            />
             <ImageLinkForm
               handleInput={this.handleInput}
               handleSubmit={this.handleSubmit}
@@ -118,9 +150,15 @@ class App extends React.Component {
             />
           </React.Fragment>
         ) : this.state.route === "signin" ? (
-          <Signin handleRouteChange={this.handleRouteChange} />
+          <Signin
+            loadUser={this.loadUser}
+            handleRouteChange={this.handleRouteChange}
+          />
         ) : (
-          <Register handleRouteChange={this.handleRouteChange} />
+          <Register
+            loadUser={this.loadUser}
+            handleRouteChange={this.handleRouteChange}
+          />
         )}
       </div>
     );
