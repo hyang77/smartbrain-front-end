@@ -1,5 +1,5 @@
 import React from "react";
-import './FaceRecognition.css'
+import "./FaceRecognition.css";
 
 const FaceRecognition = ({ imageURL, box }) => {
   return (

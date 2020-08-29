@@ -27,7 +27,7 @@ const app = new Clarifai.App({
 });
 
 class App extends React.Component {
-  constructor(props) {
+  constructor() {
     super();
     this.state = {
       input: "",
@@ -50,11 +50,11 @@ class App extends React.Component {
     this.loadUser = this.loadUser.bind(this);
   }
 
-  componentDidMount() {
-    fetch("http://localhost:3000")
-      .then((res) => res.json())
-      .then((data) => console.log(data));
-  }
+  // componentDidMount() {
+  //   fetch("http://localhost:3000")
+  //     .then((res) => res.json())
+  //     .then((data) => console.log(data));
+  // }
 
   loadUser = (data) => {
     this.setState({
@@ -91,12 +91,11 @@ class App extends React.Component {
   };
 
   handleSubmit = () => {
-    console.log("submit!");
     this.setState({ imageURL: this.state.input });
     app.models
       .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
       .then((response) => {
-        // do something with response
+        console.log(response)
         if (response) {
           fetch("http://localhost:3000/image", {
             method: "put",
@@ -105,7 +104,7 @@ class App extends React.Component {
               id: this.state.user.id,
             }),
           })
-            .then((response) => response.json())
+            .then((response) => {response.json()})
             .then((count) => {
               this.setState(Object.assign(this.state.user, { entries: count }));
             });
@@ -113,6 +112,7 @@ class App extends React.Component {
         this.displayFaceBox(this.calcFaceLocation(response));
       })
       .catch((err) => console.log(err));
+     
   };
 
   handleRouteChange = (route) => {
