@@ -81,7 +81,7 @@ class App extends React.Component {
 
   handleSubmit = () => {
     this.setState({ imageURL: this.state.input });
-    fetch("https://young-garden-08543.herokuapp.com/imageurl", {
+    fetch("https://protected-chamber-96574.herokuapp.com/imageurl", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -91,7 +91,7 @@ class App extends React.Component {
       .then((response) => response.json())
       .then((response) => {
         if (response) {
-          fetch("https://young-garden-08543.herokuapp.com:3000/image", {
+          fetch("https://protected-chamber-96574.herokuapp.com/image", {
             method: "put",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
